@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 private let reuseIdentifier = "SavedCityCell"
 private let cellCornerRaadius: CGFloat = 7.0
 private let addSegueIdentifier = "AddNewCity"
@@ -19,10 +21,6 @@ class HomeCollectionViewController: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    #if DEBUG
-      performSegue(withIdentifier: addSegueIdentifier, sender: nil)
-    #else
-
     
     let egypt = City(name: "Hurgada", country: "Egypt", weatherImageName: .sun, temperature: "22/16 ℃")
       //City(name: "Egypt", weatherImageName: .sun, temperature: "22/16 ℃")
@@ -44,7 +42,6 @@ class HomeCollectionViewController: UICollectionViewController {
     // Do any additional setup after loading the view.
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
     flowLayout?.estimatedItemSize = CGSize(width: 100, height: 120)
-    #endif
 
   }
   
@@ -86,7 +83,10 @@ class HomeCollectionViewController: UICollectionViewController {
     return cell
   }
   
-  // MARK: UICollectionViewDelegate
+  
+  @IBAction func backToSaved(segue: UIStoryboardSegue) {
+    
+  }
   
   /*
    // Uncomment this method to specify if the specified item should be highlighted during tracking

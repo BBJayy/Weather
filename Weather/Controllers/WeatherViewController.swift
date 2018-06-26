@@ -8,12 +8,19 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
 
+class WeatherViewController: UIViewController {
+  @IBOutlet weak var currentWeatherImage: UIImageView!
+  @IBOutlet weak var currentWeatherTempLabel: UILabel!
+  @IBOutlet var detailImages: [UIImageView]!
+  @IBOutlet var detailLabels: [UILabel]!
+  @IBOutlet var futureWeatherImages: [UIImageView]!
+  @IBOutlet var futureTempLabels: [UILabel]!
+  @IBOutlet var futureDayNames: [UILabel]!
+  
   var city: City? {
     didSet {
       navigationItem.title = city?.name
-      navigationItem.prompt = city?.country
     }
   }
   let APP_ID = "4241061e2732492036c32da93c869d53"
@@ -50,11 +57,26 @@ class WeatherViewController: UIViewController {
       self.weatherResponce = try! decoder.decode(WeatherResponce.self, from: data!)
       
       DispatchQueue.main.async {
-        print(response?.description)
-        print("\n\n\n")
-        print(error.debugDescription)
-        print("\n\n\n")
-        print(self.weatherResponce)
+        self.currentWeatherImage.image = self.weatherResponce?.weatherImage(forListItem: 0)!
+        self.currentWeatherTempLabel.text = "\(Int(self.weatherResponce!.list[0].main.temp - 273.15)) ℃"
+        self.detailLabels[0].text = "\(self.weatherResponce!.list[0].wind.speed)m/s"
+        self.detailLabels[1].text = String(self.weatherResponce?.list[0].rain?.percipation ?? 0) + "mm"
+        self.detailLabels[2].text = "\(self.weatherResponce!.list[0].main.humidity)%"
+        
+        //weather forecast every 3 hours in 5 days, so 24/3 == 8 updates per day
+        for i in 0..<5 {
+          self.futureWeatherImages[i].image = self.weatherResponce?.weatherImage(forListItem: i*8)!
+          self.futureTempLabels[i].text = "\(Int(self.weatherResponce!.list[i*8].main.temp - 273.15)) ℃"
+          
+          let date = self.weatherResponce?.list[i*8].dt
+          let format = "EEEE"
+          let dateFormatter = DateFormatter()
+          dateFormatter.dateFormat = format
+          
+          self.futureDayNames[i].text = dateFormatter.string(from: date!)
+        }
+        
+//        print(self.weatherResponce!.list.count)
       }
     })
     task.resume()
