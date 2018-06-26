@@ -7,30 +7,31 @@
 //
 
 import UIKit
+import CoreLocation
 
-
-
-private let reuseIdentifier = "SavedCityCell"
 private let cellCornerRaadius: CGFloat = 7.0
 private let addSegueIdentifier = "AddNewCity"
+private let reuseIdentifier = "SavedCityCell"
+private let toWeatherIdentifier = "checkoutCityWeather"
 
-class HomeCollectionViewController: UICollectionViewController {
+class HomeCollectionViewController: UICollectionViewController, CLLocationManagerDelegate {
+  
+  let locationManager = CLLocationManager()
   
   var savedCities = [City]()
+  var cityToChekout: City?
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    locationManager.delegate = self
+    locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+    locationManager.requestWhenInUseAuthorization()
     
-    let egypt = City(name: "Hurgada", country: "Egypt", weatherImageName: .sun, temperature: "22/16 ℃")
-      //City(name: "Egypt", weatherImageName: .sun, temperature: "22/16 ℃")
-    savedCities.append(egypt)
+    let hurghada = City(name: "Hurghada", country: "Egypt", weatherImage: UIImage(named: "dunno")!, temperature: "? ℃", lat: 27.257896, lng: 33.811607)
+    savedCities.append(hurghada)
     
-    let newYork = City(name: "New York", country: "USA", weatherImageName: .cloud, temperature: "5/10 ℃")
-    
-    savedCities.append(newYork)
-    savedCities.append(newYork)
-    savedCities.append(newYork)
+    let newYork = City(name: "New York", country: "Merica", weatherImage: UIImage(named: "dunno")!, temperature: "? ℃", lat: 40.712775, lng: -74.005973)
     savedCities.append(newYork)
     
     // Uncomment the following line to preserve selection between presentations
@@ -77,44 +78,80 @@ class HomeCollectionViewController: UICollectionViewController {
     let city = savedCities[indexPath.row]
     cell.cityNameLabel.text = city.name
     cell.temperaatureLabel.text = city.temperature
-    cell.weatherImage.image = UIImage(named: city.weatherImageName!.rawValue)
+    cell.weatherImage.image = city.weatherImage
     cell.layer.cornerRadius = cellCornerRaadius
     
     return cell
   }
   
   
-  @IBAction func backToSaved(segue: UIStoryboardSegue) {
-    
+  
+  
+  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    let location = locations[locations.count - 1]
+    if location.horizontalAccuracy > 0 {
+      locationManager.stopUpdatingLocation()
+      let latitude = location.coordinate.latitude
+      let longtitude = location.coordinate.longitude
+      
+      print("long:" + String(longtitude) + ", lat: " + String(latitude))
+      
+      let geoCoder = CLGeocoder()
+      let location = CLLocation(latitude: latitude, longitude: longtitude)
+      geoCoder.reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
+        
+        var placeMark: CLPlacemark!
+        placeMark = placemarks?[0]
+        
+        let cityName = placeMark.subAdministrativeArea
+        print(cityName)
+        let countryName = placeMark.country
+        print(countryName)
+        
+        
+        self.cityToChekout = City(name: cityName!, country: countryName!, weatherImage: UIImage(named: "cloud")!, temperature: "4.0", lat: Float(latitude), lng: Float(longtitude))
+        self.performSegue(withIdentifier: toWeatherIdentifier, sender: nil)
+        
+      })
+//      let params : [String : String] = ["lat" : latitude, "lon" : longtitude, "appid" : APP_ID]
+//
+//      getWeatherData(url: WEATHER_URL, parameters: params)
+    }
   }
   
-  /*
-   // Uncomment this method to specify if the specified item should be highlighted during tracking
-   override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-   return true
-   }
-   */
+  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    cityToChekout = savedCities[indexPath.row]
+    performSegue(withIdentifier: toWeatherIdentifier, sender: nil)
+    collectionView.deselectItem(at: indexPath, animated: true)
+  }
   
-  /*
-   // Uncomment this method to specify if the specified item should be selected
-   override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-   return true
-   }
-   */
+  @IBAction func appendToHomeVC(segue: UIStoryboardSegue) {
+    let weatherVC = segue.source as! WeatherViewController
+    savedCities.append(weatherVC.city!)
+    collectionView?.reloadData()
+  }
   
-  /*
-   // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-   override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-   return false
-   }
-   
-   override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-   return false
-   }
-   
-   override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-   
-   }
-   */
+  @IBAction func saveToHomeVC(segue: UIStoryboardSegue) {
+    let weatherVC = segue.source as! WeatherViewController
+    let updatedCity = weatherVC.city!
+    let i = savedCities.index { $0.name == updatedCity.name }
+    if i != nil {
+      savedCities[i!] = updatedCity
+    }
+    collectionView?.reloadData()
+  }
+  
+  @IBAction func myLocationButtonClicked(_ sender: Any) {
+    locationManager.startUpdatingLocation()
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == toWeatherIdentifier {
+      guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
+      // Add below code to get address for touch coordinates.
+      destination.city = cityToChekout
+      destination.navigationItem.title = cityToChekout!.name
+    }
+  }
   
 }

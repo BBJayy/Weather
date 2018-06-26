@@ -108,7 +108,7 @@ class CityChooserTableViewController: UITableViewController {
       }
     }
   
-  //TODO: why can't do like this
+  //TODO: why can't I do like this
 //  override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 //    //    super.tableView(tableView, willSelectRowAt: indexPath)
 //

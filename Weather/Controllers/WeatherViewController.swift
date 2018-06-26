@@ -8,8 +8,10 @@
 
 import UIKit
 
+private let unwindSegueIdentifyer = "unwindSegue"
 
 class WeatherViewController: UIViewController {
+  @IBOutlet weak var navBar: UINavigationBar?
   @IBOutlet weak var currentWeatherImage: UIImageView!
   @IBOutlet weak var currentWeatherTempLabel: UILabel!
   @IBOutlet var detailImages: [UIImageView]!
@@ -91,15 +93,15 @@ class WeatherViewController: UIViewController {
   
     override func viewDidLoad() {
         super.viewDidLoad()
+      navBar?.topItem?.title = city?.name
 
-      
     }
   
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    city?.weatherImage = weatherResponce?.weatherImage(forListItem: 0)!
+    city?.temperature = "\(Int(weatherResponce!.list[0].main.temp - 273.15)) ℃"
+  }
     
 
     /*

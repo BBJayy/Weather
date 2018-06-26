@@ -59,6 +59,7 @@
 			children = (
 				84A21D8320E1A9E90090E159 /* Weather */,
 				84A21D5520E17D640090E159 /* Products */,
+				84F877CA20E2B4B400EA1701 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -124,6 +125,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		84F877CA20E2B4B400EA1701 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -157,6 +165,11 @@
 					84A21D5320E17D640090E159 = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 0940;
+						SystemCapabilities = {
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};

@@ -6,24 +6,25 @@
 //  Copyright © 2018 Рома Сорока. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct City: Decodable {
-  enum Weather: String, Decodable {
-    case cloud
-    case outlinedCloud
-    case outlinedSunnyCloud
-    case rainyCloud
-    case stormCloud
-    case sun
-  }
+//  enum Weather: String, Decodable {
+//    case cloud
+//    case outlinedCloud
+//    case outlinedSunnyCloud
+//    case rainyCloud
+//    case stormCloud
+//    case sun
+//    case dunno
+//  }
 
   let name: String
   let country: String
   let lat: Float
   let lng: Float
-  let weatherImageName: Weather?
-  let temperature: String?
+  var weatherImage: UIImage?
+  var temperature: String?
  
   enum CodingKeys: String, CodingKey {
     case lat
@@ -41,17 +42,17 @@ struct City: Decodable {
     let lngString = try container.decode(String.self, forKey: .lng)
     lat = Float(latString)!
     lng = Float(lngString)!
-    weatherImageName = nil
+    weatherImage = nil
     temperature = nil
   }
   
-  init(name: String, country: String, weatherImageName: Weather, temperature: String) {
+  init(name: String, country: String, weatherImage: UIImage, temperature: String, lat: Float, lng: Float) {
     self.name = name
     self.country = country
-    self.weatherImageName = weatherImageName
+    self.weatherImage = weatherImage
     self.temperature = temperature
-    lat = 0.0
-    lng = 0.0
+    self.lat = lat
+    self.lng = lng
   }
   
 }

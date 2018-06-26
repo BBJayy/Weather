@@ -34,6 +34,10 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="sun" translatesAutoresizingMaskIntoConstraints="NO" id="0DB-cC-U0T">
                                             <rect key="frame" x="20" y="3" width="80" height="77.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="80" id="aDJ-VE-SKT"/>
+                                                <constraint firstAttribute="height" constant="77.5" id="lK5-7d-vZP"/>
+                                            </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Egypt" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BeZ-oZ-4fB">
                                             <rect key="frame" x="5" y="85.5" width="110" height="14"/>
@@ -67,7 +71,6 @@
                                     <outlet property="cityNameLabel" destination="BeZ-oZ-4fB" id="Ogo-G6-1Ik"/>
                                     <outlet property="temperaatureLabel" destination="j6U-gP-qfw" id="4ci-Bk-1gc"/>
                                     <outlet property="weatherImage" destination="0DB-cC-U0T" id="rbe-4C-0IN"/>
-                                    <segue destination="MK4-PH-JgL" kind="show" identifier="CheckoutWeatherDetail" id="E9f-hI-71J"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -84,10 +87,10 @@
                                 <segue destination="y0T-cf-p0D" kind="show" identifier="AddNewCity" id="nFv-qJ-cq4"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="pindrop" id="xWT-KM-baA">
+                        <barButtonItem key="rightBarButtonItem" image="pindrop" id="xWT-KM-baA">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="MK4-PH-JgL" kind="show" identifier="myLocation" id="qdN-ns-QNr"/>
+                                <action selector="myLocationButtonClicked:" destination="dbX-3a-dfE" id="qrc-ur-Qbc"/>
                             </connections>
                         </barButtonItem>
                         <userDefinedRuntimeAttributes>
@@ -97,6 +100,9 @@
                             <userDefinedRuntimeAttribute type="string" keyPath="self.navigationBar.backItem.title" value=""/>
                         </userDefinedRuntimeAttributes>
                     </navigationItem>
+                    <connections>
+                        <segue destination="MK4-PH-JgL" kind="showDetail" identifier="checkoutCityWeather" id="7c9-Eq-QiI"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="isB-kd-O1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -115,17 +121,9 @@
                         <color key="sectionIndexColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="sectionIndexBackgroundColor" red="0.094117647060000004" green="0.1137254902" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="sectionIndexTrackingBackgroundColor" red="0.094117647060000004" green="0.1137254902" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" id="nrx-0V-8wZ">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <color key="tintColor" red="0.094117647060000004" green="0.1137254902" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <color key="barTintColor" red="0.094117647060000004" green="0.1137254902" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="gray" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CityCell" textLabel="u1R-jM-Xhz" style="IBUITableViewCellStyleDefault" id="qHR-Yw-koh">
-                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qHR-Yw-koh" id="9hn-LA-Zu1">
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -173,6 +171,26 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="7VD-dk-ZGA"/>
                                 </constraints>
+                                <color key="barTintColor" red="0.094117647060000004" green="0.1137254902" blue="0.12549019610000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <textAttributes key="titleTextAttributes">
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </textAttributes>
+                                <items>
+                                    <navigationItem title="Some City" id="NFh-gE-4fA">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="orS-MI-cWM">
+                                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <segue destination="AAL-w1-9Ur" kind="unwind" unwindAction="saveToHomeVCWithSegue:" id="K6F-F5-ued"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="nXd-7q-ltf">
+                                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <connections>
+                                                <segue destination="AAL-w1-9Ur" kind="unwind" unwindAction="appendToHomeVCWithSegue:" id="Xed-Gl-2Cf"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
                             </navigationBar>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AQQ-BC-71P" userLabel="MainView" customClass="CurrentWeatherView" customModule="Weather" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="64" width="375" height="301.5"/>
@@ -550,13 +568,14 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="18S-i3-UAE">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="AAL-w1-9Ur" kind="unwind" identifier="unwindSegue" unwindAction="backToSavedWithSegue:" id="nGW-A1-yDb"/>
+                                <segue destination="AAL-w1-9Ur" kind="unwind" unwindAction="appendToHomeVCWithSegue:" id="elV-rA-08q"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="currentWeatherImage" destination="JiO-OD-w5N" id="sAK-PQ-HPd"/>
                         <outlet property="currentWeatherTempLabel" destination="rUM-tG-IBt" id="p6C-Pq-TuF"/>
+                        <outlet property="navBar" destination="Y59-Se-UIj" id="onH-rU-M6v"/>
                         <outletCollection property="detailImages" destination="tAb-Oi-unv" collectionClass="NSMutableArray" id="FvV-Fc-Zyh"/>
                         <outletCollection property="detailImages" destination="zGK-3z-ZfT" collectionClass="NSMutableArray" id="EDb-06-eUK"/>
                         <outletCollection property="detailImages" destination="g3t-Zw-WHC" collectionClass="NSMutableArray" id="SfV-rM-CCE"/>
@@ -588,6 +607,7 @@
         <!--Navigation Controller-->
         <scene sceneID="69i-8q-Eea">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3iU-mt-90J" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gua-aW-gWs" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="fNZ-LZ-8on">
@@ -608,7 +628,6 @@
                         <segue destination="dbX-3a-dfE" kind="relationship" relationship="rootViewController" id="D6Y-9u-3Tl"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3iU-mt-90J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-112.8" y="121.88905547226388"/>
         </scene>
@@ -621,6 +640,6 @@
         <image name="wind" width="76" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="E9f-hI-71J"/>
+        <segue reference="7c9-Eq-QiI"/>
     </inferredMetricsTieBreakers>
 </document>
