@@ -77,7 +77,6 @@ class WeatherViewController: UIViewController {
           
           self.futureDayNames[i].text = dateFormatter.string(from: date!)
         }
-        
 //        print(self.weatherResponce!.list.count)
       }
     })
@@ -99,8 +98,12 @@ class WeatherViewController: UIViewController {
   
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    city?.weatherImage = weatherResponce?.weatherImage(forListItem: 0)!
-    city?.temperature = "\(Int(weatherResponce!.list[0].main.temp - 273.15)) ℃"
+    city?.weatherImage = weatherResponce?.weatherImage(forListItem: 0) ?? UIImage(named: "dunno")
+    if let fahrenheits = weatherResponce?.list[0].main.temp {
+      city?.temperature = "\(Int(fahrenheits - 273.15)) ℃"
+    } else {
+      city?.temperature = "? ℃"
+    }
   }
     
 

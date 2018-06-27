@@ -150,7 +150,6 @@ class HomeCollectionViewController: UICollectionViewController, CLLocationManage
       guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
       // Add below code to get address for touch coordinates.
       destination.city = cityToChekout
-      destination.navigationItem.title = cityToChekout!.name
     }
   }
   
