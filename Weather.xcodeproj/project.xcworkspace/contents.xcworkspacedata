@@ -2,27 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:../Weather/AppDelegate.swift">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/Assets.xcassets">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/Base.lproj">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/CollectionViewCell.swift">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/HomeCollectionViewController.swift">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/Info.plist">
-   </FileRef>
-   <FileRef
-      location = "group:../Weather/Models">
-   </FileRef>
-   <FileRef
       location = "self:">
    </FileRef>
 </Workspace>

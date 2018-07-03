@@ -28,19 +28,12 @@ class HomeCollectionViewController: UICollectionViewController, CLLocationManage
     locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     locationManager.requestWhenInUseAuthorization()
     
+    
     let hurghada = City(name: "Hurghada", country: "Egypt", weatherImage: UIImage(named: "dunno")!, temperature: "? ℃", lat: 27.257896, lng: 33.811607)
+    let newYork = City(name: "New York", country: "USA", weatherImage: UIImage(named: "dunno")!, temperature: "? ℃", lat: 40.712775, lng: -74.005973)
+    savedCities.append(newYork)
     savedCities.append(hurghada)
     
-    let newYork = City(name: "New York", country: "Merica", weatherImage: UIImage(named: "dunno")!, temperature: "? ℃", lat: 40.712775, lng: -74.005973)
-    savedCities.append(newYork)
-    
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = false
-    
-    // Register cell classes
-//    self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-    
-    // Do any additional setup after loading the view.
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
     flowLayout?.estimatedItemSize = CGSize(width: 100, height: 120)
 
@@ -50,15 +43,15 @@ class HomeCollectionViewController: UICollectionViewController, CLLocationManage
     return collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
   }
   
-  /*
-   // MARK: - Navigation
-   
-   // In a storyboard-based application, you will often want to do a little preparation before navigation
-   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   // Get the new view controller using [segue destinationViewController].
-   // Pass the selected object to the new view controller.
-   }
-   */
+  //MARK: Navigation
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == toWeatherIdentifier {
+      guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
+      // Add below code to get address for touch coordinates.
+      destination.city = cityToChekout
+    }
+  }
   
   // MARK: UICollectionViewDataSource
   
@@ -77,8 +70,8 @@ class HomeCollectionViewController: UICollectionViewController, CLLocationManage
     
     let city = savedCities[indexPath.row]
     cell.cityNameLabel.text = city.name
-    cell.temperaatureLabel.text = city.temperature
-    cell.weatherImage.image = city.weatherImage
+    cell.temperaatureLabel.text = city.temperature ?? "? ℃"
+    cell.weatherImage.image = city.weatherImage ?? UIImage(named: "dunno")
     cell.layer.cornerRadius = cellCornerRaadius
     
     return cell
@@ -145,12 +138,6 @@ class HomeCollectionViewController: UICollectionViewController, CLLocationManage
     locationManager.startUpdatingLocation()
   }
   
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == toWeatherIdentifier {
-      guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
-      // Add below code to get address for touch coordinates.
-      destination.city = cityToChekout
-    }
-  }
+  
   
 }

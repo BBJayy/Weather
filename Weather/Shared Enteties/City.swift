@@ -6,19 +6,9 @@
 //  Copyright © 2018 Рома Сорока. All rights reserved.
 //
 
-import UIKit
+import UIKit.UIImage
 
 struct City: Decodable {
-//  enum Weather: String, Decodable {
-//    case cloud
-//    case outlinedCloud
-//    case outlinedSunnyCloud
-//    case rainyCloud
-//    case stormCloud
-//    case sun
-//    case dunno
-//  }
-
   let name: String
   let country: String
   let lat: Float
