@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 class Networking: NetworkingService {
   
   func getRequest(_ url: URL, parameters: [String : String], responce: @escaping (Data?, Error?) -> ()) {
@@ -27,6 +28,7 @@ class Networking: NetworkingService {
     
     var urlRequest = URLRequest(url: urlComp.url!)
     urlRequest.httpMethod = "GET"
+    
     let config = URLSessionConfiguration.default
     let session = URLSession(configuration: config)
     

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class WeatherViewController: UIViewController {
   @IBOutlet weak var navBar: UINavigationBar? {
@@ -20,44 +21,52 @@ class WeatherViewController: UIViewController {
   @IBOutlet var futureTempLabels: [UILabel]!
   @IBOutlet var futureDayNames: [UILabel]!
   
+  var weatherModel = WeatherModel(networkingService: Networking())
+  
   var city: City? {
     didSet {
       navigationItem.title = city?.name
     }
   }
   
-  var weatherModel = WeatherModel(networkingService: Networking())
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    weatherModel.get5DayWeatherForecast(city: city!) { (weatherResponce: WeatherResponce?) in
-      guard weatherResponce != nil else { return }
+    weatherModel.get5DayWeatherForecast(city: city!) { (responce: Responce<WeatherResponce>) in
       
-      self.updateUIfor(day: 0, from: weatherResponce!)
+      if responce.error != nil {  print(responce.error!.localizedDescription) }
+      
+      self.updateUIfor(day: 0, from: responce.entity)
     }
   }
 
-  func updateUIfor(day: Int, from json: WeatherResponce) {
-    let i = json.timeStamps.count / 5
-    
-    currentWeatherImage.image = json.timeStamps[day * i].weatherImage
-    self.city?.weatherImage = json.timeStamps[0].weatherImage
-    self.currentWeatherTempLabel.text = "\(Int(json.timeStamps[day * i].temp - 273.15)) ℃"
-    self.city?.temperature = "\(Int(json.timeStamps[day * i].temp - 273.15)) ℃"
-    self.detailLabels[0].text = "\(json.timeStamps[day * i].windSpeed)m/s"
-    self.detailLabels[1].text = String(json.timeStamps[day * i].percipation) + "mm"
-    self.detailLabels[2].text = "\(json.timeStamps[day * i].humidity)%"
-    
-    for i in 0..<5 {
-      self.futureWeatherImages[i].image = json.timeStamps[0].weatherImage
-      self.futureTempLabels[i].text = "\(Int(json.timeStamps[i*8].temp - 273.15)) ℃"
+  
+  func updateUIfor(day: Int, from responce: WeatherResponce?) {
+    if let resp = responce {
+      let i = resp.timeStamps.count / 5
       
-      let date = json.timeStamps[i*8].date
-      let format = "EEEE"
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = format
+      currentWeatherImage.image = resp.timeStamps[day * i].weatherImage
+      city?.weatherImage = resp.timeStamps[0].weatherImage
+      currentWeatherTempLabel.text = "\(Int(resp.timeStamps[day * i].temp - 273.15)) ℃"
+      city?.temperature = "\(Int(resp.timeStamps[day * i].temp - 273.15)) ℃"
+      detailLabels[0].text = "\(resp.timeStamps[day * i].windSpeed)m/s"
+      detailLabels[1].text = String(resp.timeStamps[day * i].percipation) + "mm"
+      detailLabels[2].text = "\(resp.timeStamps[day * i].humidity)%"
       
-      self.futureDayNames[i].text = dateFormatter.string(from: date)
+      for i in 0..<5 {
+        futureWeatherImages[i].image = resp.timeStamps[0].weatherImage
+        futureTempLabels[i].text = "\(Int(resp.timeStamps[i*8].temp - 273.15)) ℃"
+        
+        let date = resp.timeStamps[i*8].date
+        let format = "EEEE"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        
+        futureDayNames[i].text = dateFormatter.string(from: date)
+      }
+    } else {
+      currentWeatherTempLabel.text = "Error occured"
+      detailLabels.forEach { $0.text = "..." }
     }
   }
   

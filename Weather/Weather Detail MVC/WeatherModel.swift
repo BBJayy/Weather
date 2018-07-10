@@ -19,19 +19,26 @@ class WeatherModel {
   var APP_ID = "4241061e2732492036c32da93c869d53"
   var fiveDayForecastURL = URL(string: "http://api.openweathermap.org/data/2.5/forecast")!
   
-  func get5DayWeatherForecast(city: City, responce: @escaping (WeatherResponce?) -> () ) {
+  func get5DayWeatherForecast(city: City, responce: @escaping (Responce<WeatherResponce>) -> () ) {
     
     let params = ["lat" : String(city.lat), "lon" : String(city.lng), "appid" : APP_ID]
-    weatherNetworking?.getRequest(fiveDayForecastURL, parameters: params) { (data, error) in
-      guard error == nil else { responce(nil); return }
+    weatherNetworking?.getRequest(fiveDayForecastURL, parameters: params) { [weak self] (data, error) in
       
-      let decoder = JSONDecoder()
-      decoder.dateDecodingStrategy = .secondsSince1970
-      self.weatherResponce = try! decoder.decode(WeatherResponce.self, from: data!)
-      
-      DispatchQueue.main.async {
-        responce(self.weatherResponce)
+      defer {
+        DispatchQueue.main.async {
+          responce(Responce<WeatherResponce>(self?.weatherResponce, error))
+        }
       }
+      
+      
+      if error == nil {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        self?.weatherResponce = try! decoder.decode(WeatherResponce.self, from: data!)
+      } else {
+        self?.weatherResponce = nil
+      }
+      
     }
   }
   

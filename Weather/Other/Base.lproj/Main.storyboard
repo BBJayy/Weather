@@ -83,7 +83,7 @@
                         <barButtonItem key="leftBarButtonItem" systemItem="add" id="tJk-il-XSH">
                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
-                                <segue destination="y0T-cf-p0D" kind="show" identifier="AddNewCity" id="nFv-qJ-cq4"/>
+                                <segue destination="y0T-cf-p0D" kind="show" identifier="addNewCity" id="nFv-qJ-cq4"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="pindrop" id="xWT-KM-baA">
@@ -639,6 +639,6 @@
         <image name="wind" width="76" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="59o-Sf-IIg"/>
+        <segue reference="7c9-Eq-QiI"/>
     </inferredMetricsTieBreakers>
 </document>
