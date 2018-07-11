@@ -8,35 +8,15 @@
 
 import UIKit.UIImage
 
-struct City: Decodable {
+struct City {
   let name: String
   let country: String
-  let lat: Float
-  let lng: Float
+  let lat: Double
+  let lng: Double
   var weatherImage: UIImage?
   var temperature: String?
- 
-  enum CodingKeys: String, CodingKey {
-    case lat
-    case lng
-    case country
-    case name
-  }
   
-  init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    name = try container.decode(String.self, forKey: .name)
-    country = try container.decode(String.self, forKey: .country)
-
-    let latString = try container.decode(String.self, forKey: .lat)
-    let lngString = try container.decode(String.self, forKey: .lng)
-    lat = Float(latString)!
-    lng = Float(lngString)!
-    weatherImage = nil
-    temperature = nil
-  }
-  
-  init(name: String, country: String, weatherImage: UIImage, temperature: String, lat: Float, lng: Float) {
+  init(name: String, country: String, weatherImage: UIImage?, temperature: String?, lat: Double, lng: Double) {
     self.name = name
     self.country = country
     self.weatherImage = weatherImage
@@ -45,4 +25,30 @@ struct City: Decodable {
     self.lng = lng
   }
   
+}
+
+//MARK: JSON decoding
+
+extension City: Decodable {
+  enum CodingKeys: String, CodingKey {
+    case coord
+    case country
+    case name
+  }
+  
+  struct Coords: Decodable {
+    let lat: Double
+    let lon: Double
+  }
+  
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    name = try container.decode(String.self, forKey: .name)
+    country = try container.decode(String.self, forKey: .country)
+    
+    let coord = try container.decode(Coords.self, forKey: .coord)
+    lat = coord.lat
+    lng = coord.lon
+    
+  }
 }

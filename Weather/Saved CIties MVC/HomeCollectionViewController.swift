@@ -10,11 +10,11 @@ import UIKit
 import CoreLocation
 
 private let cellCornerRaadius: CGFloat = 7.0
-private let addSegueIdentifier = "addNewCity"
 private let reuseIdentifier = "SavedCityCell"
-private let toWeatherIdentifier = "checkoutCityWeather"
-
+private let toWeatherSegueIdentifier = "checkoutCityWeather"
+private let toAddVCSegueIdentifier = "addNewCity"
 class HomeCollectionViewController: UICollectionViewController {
+  @IBOutlet weak var spinner: UIActivityIndicatorView!
   
   var homeModel = HomeModel()
   
@@ -27,6 +27,9 @@ class HomeCollectionViewController: UICollectionViewController {
     
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
     flowLayout?.estimatedItemSize = CGSize(width: 100, height: 120)
+//    #if DEBUG
+//    performSegue(withIdentifier: toAddVCSegueIdentifier, sender: nil)
+//    #endif
   }
   
   private var flowLayout: UICollectionViewFlowLayout? {
@@ -46,19 +49,19 @@ class HomeCollectionViewController: UICollectionViewController {
     let i = homeModel.savedCities.index { $0.name == updatedCity.name }
     if i != nil {
       homeModel.savedCities[i!] = updatedCity
+      collectionView?.reloadData()
     }
-    collectionView?.reloadData()
   }
   
   @IBAction func myLocationButtonClicked(_ sender: Any) {
     locationManager.startUpdatingLocation()
+    spinner.startAnimating()
   }
   
   //MARK: Navigation
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == toWeatherIdentifier {
+    if segue.identifier == toWeatherSegueIdentifier {
       guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
-      // Add below code to get address for touch coordinates.
       destination.city = homeModel.cityToChekout
     }
   }
@@ -74,7 +77,6 @@ extension HomeCollectionViewController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    // #warning Incomplete implementation, return the number of items
     return homeModel.savedCities.count
   }
   
@@ -92,7 +94,7 @@ extension HomeCollectionViewController {
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     homeModel.cityToChekout = homeModel.savedCities[indexPath.row]
-    performSegue(withIdentifier: toWeatherIdentifier, sender: nil)
+    performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
     collectionView.deselectItem(at: indexPath, animated: true)
   }
 }
@@ -107,22 +109,33 @@ extension HomeCollectionViewController: CLLocationManagerDelegate {
     locationManager.requestWhenInUseAuthorization()
   }
   
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+  private func presentAlert() {
+    let aller = UIAlertController(title: "Error", message: "Check your internet connection", preferredStyle: .alert)
+    present(aller, animated: true, completion: nil)
+    Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+      self.dismiss(animated: true, completion: nil)
+    }
+  }
+  
+  internal func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location = locations[locations.count - 1]
     if location.horizontalAccuracy > 0 {
       locationManager.stopUpdatingLocation()
-      let latitude = Float(location.coordinate.latitude)
-      let longtitude = Float(location.coordinate.longitude)
+      let lat = location.coordinate.latitude
+      let lng = location.coordinate.longitude
       
       //print("long:" + String(longtitude) + ", lat: " + String(latitude))
-        
-        self.homeModel.cityToChekout = self.homeModel.
-        self.performSegue(withIdentifier: toWeatherIdentifier, sender: nil)
-        
-      })
-      //      let params : [String : String] = ["lat" : latitude, "lon" : longtitude, "appid" : APP_ID]
-      //
-      //      getWeatherData(url: WEATHER_URL, parameters: params)
+      self.homeModel.cityWith(latitude: lat, longitude: lng) { (city) in
+        self.spinner.stopAnimating()
+        if city == nil {
+          self.presentAlert()
+          return
+        } else {
+          self.homeModel.cityToChekout = city!
+          self.performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
+        }
+      }
+      
     }
   }
   
