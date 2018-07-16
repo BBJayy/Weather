@@ -39,9 +39,11 @@ class CityChooserTableViewController: UITableViewController {
     tableView.isScrollEnabled = false
     DispatchQueue.global(qos: .userInteractive).async { [weak self] in
       self?.model.loadCitiesFromDB()
-      self?.navigationItem.title = "Choose city"
-      self?.tableView.reloadData()
-      self?.tableView.isScrollEnabled = true
+      DispatchQueue.main.async {
+        self?.navigationItem.title = "Choose city"
+        self?.tableView.reloadData()
+        self?.tableView.isScrollEnabled = true
+      }
     }
 
   }

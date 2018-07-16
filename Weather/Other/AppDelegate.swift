@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   // MARK: - Core Data stack
   
-  lazy var applicationApplicationSupportDirectory: URL = {
+  lazy var applicationSupportDirectory: URL = {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "com.appcoda.CoreDataDemo" in the application's documents Application Support directory.
     let urls = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
     let url = urls[urls.count - 1].appendingPathComponent("Application Support", isDirectory: true)
@@ -36,12 +36,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   lazy var persistentContainer: NSPersistentContainer = {
     
-    let url = applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite")
+    let url = applicationSupportDirectory.appendingPathComponent("DataModel.sqlite")
 
     if !FileManager.default.fileExists(atPath: url.path) {
       let sourceSqliteURLs = [Bundle.main.url(forResource: "DataModel", withExtension: "sqlite")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-wal")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-shm")!]
 
-      let destSqliteURLs = [applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite"), applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite-wal"), applicationApplicationSupportDirectory  .appendingPathComponent("DataModel.sqlite-shm")]
+      let destSqliteURLs = [applicationSupportDirectory.appendingPathComponent("DataModel.sqlite"), applicationSupportDirectory.appendingPathComponent("DataModel.sqlite-wal"), applicationSupportDirectory  .appendingPathComponent("DataModel.sqlite-shm")]
 
       var error:NSError? = nil
       for index in 0..<sourceSqliteURLs.count {
