@@ -27,21 +27,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   // MARK: - Core Data stack
   
-  lazy var applicationSupportDirectory: URL = {
+  lazy var applicationDocumentDirectory: URL = {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "com.appcoda.CoreDataDemo" in the application's documents Application Support directory.
-    let urls = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
-    let url = urls[urls.count - 1].appendingPathComponent("Application Support", isDirectory: true)
+    let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    let url = urls[urls.count - 1]
     return url
   }()
   
   lazy var persistentContainer: NSPersistentContainer = {
     
-    let url = applicationSupportDirectory.appendingPathComponent("DataModel.sqlite")
+    let url = applicationDocumentDirectory.appendingPathComponent("DataModel.sqlite")
 
     if !FileManager.default.fileExists(atPath: url.path) {
       let sourceSqliteURLs = [Bundle.main.url(forResource: "DataModel", withExtension: "sqlite")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-wal")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-shm")!]
 
-      let destSqliteURLs = [applicationSupportDirectory.appendingPathComponent("DataModel.sqlite"), applicationSupportDirectory.appendingPathComponent("DataModel.sqlite-wal"), applicationSupportDirectory  .appendingPathComponent("DataModel.sqlite-shm")]
+      let destSqliteURLs = [applicationDocumentDirectory.appendingPathComponent("DataModel.sqlite"), applicationDocumentDirectory.appendingPathComponent("DataModel.sqlite-wal"), applicationDocumentDirectory.appendingPathComponent("DataModel.sqlite-shm")]
 
       var error:NSError? = nil
       for index in 0..<sourceSqliteURLs.count {
@@ -51,6 +51,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     let container = NSPersistentContainer(name: "DataModel")
+    let document = NSPersistentStoreDescription(url: applicationDocumentDirectory.appendingPathComponent("DataModel.sqlite"))
+    container.persistentStoreDescriptions = [document]
     container.loadPersistentStores(completionHandler: { (storeDescription, error) in
       if let error = error as NSError? {
         

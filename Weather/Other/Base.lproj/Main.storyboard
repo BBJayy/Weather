@@ -405,7 +405,7 @@
                                                             <constraint firstItem="DMy-7M-iC7" firstAttribute="leading" secondItem="L0O-Jj-JRT" secondAttribute="leading" constant="3" id="wWI-o3-AkA"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GIw-Ok-KnC">
+                                                    <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GIw-Ok-KnC">
                                                         <rect key="frame" x="72.5" y="0.0" width="68.5" height="57.5"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2a9-92-CBe">
@@ -439,7 +439,7 @@
                                                             <constraint firstAttribute="trailing" secondItem="x97-te-nl9" secondAttribute="trailing" constant="3" id="vfb-aA-YjD"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2pt-3W-ahf">
+                                                    <view tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2pt-3W-ahf">
                                                         <rect key="frame" x="145" y="0.0" width="69" height="57.5"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AxR-be-284">
@@ -473,7 +473,7 @@
                                                             <constraint firstItem="zfE-B8-O95" firstAttribute="top" secondItem="AxR-be-284" secondAttribute="bottom" constant="2" id="z7m-rg-DDN"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d0M-dG-iPb">
+                                                    <view tag="3" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d0M-dG-iPb">
                                                         <rect key="frame" x="218" y="0.0" width="68.5" height="57.5"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ggv-Gt-9P2">
@@ -507,7 +507,7 @@
                                                             <constraint firstItem="DUK-59-fzn" firstAttribute="top" secondItem="ggv-Gt-9P2" secondAttribute="bottom" constant="2" id="q8x-lL-hPc"/>
                                                         </constraints>
                                                     </view>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CxW-Uu-twB">
+                                                    <view tag="4" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CxW-Uu-twB">
                                                         <rect key="frame" x="290.5" y="0.0" width="68.5" height="57.5"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Szz-KM-qRN">
@@ -617,6 +617,11 @@
                         <outletCollection property="futureDayNames" destination="Ala-Y7-MUE" collectionClass="NSMutableArray" id="fNk-7c-Qhk"/>
                         <outletCollection property="futureDayNames" destination="ejK-Zq-Ddt" collectionClass="NSMutableArray" id="Igu-BC-d1f"/>
                         <outletCollection property="futureDayNames" destination="UJZ-Y7-1Cr" collectionClass="NSMutableArray" id="4x1-k0-FIp"/>
+                        <outletCollection property="futureViews" destination="L0O-Jj-JRT" collectionClass="NSMutableArray" id="Qz2-tk-7tP"/>
+                        <outletCollection property="futureViews" destination="GIw-Ok-KnC" collectionClass="NSMutableArray" id="dWQ-U6-rKQ"/>
+                        <outletCollection property="futureViews" destination="2pt-3W-ahf" collectionClass="NSMutableArray" id="8oX-79-r07"/>
+                        <outletCollection property="futureViews" destination="d0M-dG-iPb" collectionClass="NSMutableArray" id="PnX-qZ-Nhg"/>
+                        <outletCollection property="futureViews" destination="CxW-Uu-twB" collectionClass="NSMutableArray" id="6or-K2-2FS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SC2-A3-nFG" userLabel="First Responder" sceneMemberID="firstResponder"/>

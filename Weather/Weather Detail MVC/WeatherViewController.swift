@@ -16,11 +16,19 @@ class WeatherViewController: UIViewController {
   @IBOutlet weak var currentWeatherTempLabel: UILabel!
   @IBOutlet var detailImages: [UIImageView]!
   @IBOutlet var detailLabels: [UILabel]!
+  @IBOutlet var futureViews: [UIView]! {
+    didSet {
+      for view in futureViews {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(futureViewTapped(sender:)))
+        view.addGestureRecognizer(tapGesture)
+      }
+    }
+  }
   @IBOutlet var futureWeatherImages: [UIImageView]!
   @IBOutlet var futureTempLabels: [UILabel]!
   @IBOutlet var futureDayNames: [UILabel]!
   
-  var weatherModel = WeatherModel(networkingService: Networking())
+  var model = WeatherModel(networkingService: Networking())
   
   var city: WeatherCity? {
     didSet {
@@ -28,10 +36,14 @@ class WeatherViewController: UIViewController {
     }
   }
   
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+  }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    weatherModel.get5DayWeatherForecast(city: city!) { (responce: Responce<WeatherResponce>) in
+    model.get5DayWeatherForecast(city: city!) { (responce: Responce<WeatherResponce>) in
       
       if responce.error != nil {  print(responce.error!.localizedDescription) }
       
@@ -39,6 +51,12 @@ class WeatherViewController: UIViewController {
     }
   }
 
+  @objc func futureViewTapped(sender: UIGestureRecognizer) {
+    let day = sender.view!.tag
+    futureViews.forEach { $0.backgroundColor = #colorLiteral(red: 0.1176470588, green: 0.1411764706, blue: 0.1529411765, alpha: 1) }
+    futureViews[day].backgroundColor = #colorLiteral(red: 0.9960784314, green: 0.4784313725, blue: 0, alpha: 1)
+    updateUIandCityFor(day: day, from: model.weatherResponce)
+  }
   
   func updateUIandCityFor(day: Int, from responce: WeatherResponce?) {
     if let resp = responce {
