@@ -13,10 +13,12 @@ private let cellCornerRaadius: CGFloat = 7.0
 private let reuseIdentifier = "SavedCityCell"
 private let toWeatherSegueIdentifier = "checkoutCityWeather"
 private let toAddVCSegueIdentifier = "addNewCity"
+
 class HomeCollectionViewController: UICollectionViewController {
   @IBOutlet weak var spinner: UIActivityIndicatorView!
   
-  var homeModel = HomeModel()
+  private var model = HomeModel()
+  
   
   let locationManager = CLLocationManager()
 
@@ -27,9 +29,7 @@ class HomeCollectionViewController: UICollectionViewController {
     
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
     flowLayout?.estimatedItemSize = CGSize(width: 100, height: 120)
-//    #if DEBUG
-//    performSegue(withIdentifier: toAddVCSegueIdentifier, sender: nil)
-//    #endif
+    
   }
   
   private var flowLayout: UICollectionViewFlowLayout? {
@@ -39,16 +39,16 @@ class HomeCollectionViewController: UICollectionViewController {
   
   @IBAction func appendToHomeVC(segue: UIStoryboardSegue) {
     let weatherVC = segue.source as! WeatherViewController
-    homeModel.savedCities.append(weatherVC.city!)
+    model.savedCities.append(weatherVC.city!)
     collectionView?.reloadData()
   }
   
   @IBAction func saveToHomeVC(segue: UIStoryboardSegue) {
     let weatherVC = segue.source as! WeatherViewController
     let updatedCity = weatherVC.city!
-    let i = homeModel.savedCities.index { $0.name == updatedCity.name }
+    let i = model.savedCities.index { $0.name == updatedCity.name }
     if i != nil {
-      homeModel.savedCities[i!] = updatedCity
+      model.savedCities[i!] = updatedCity
       collectionView?.reloadData()
     }
   }
@@ -62,7 +62,7 @@ class HomeCollectionViewController: UICollectionViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == toWeatherSegueIdentifier {
       guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
-      destination.city = homeModel.cityToChekout
+      destination.city = model.cityToChekout
     }
   }
   
@@ -77,15 +77,15 @@ extension HomeCollectionViewController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return homeModel.savedCities.count
+    return model.savedCities.count
   }
   
   override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
     
-    let city = homeModel.savedCities[indexPath.row]
+    let city = model.savedCities[indexPath.row]
     cell.cityNameLabel.text = city.name
-    cell.temperaatureLabel.text = city.temperature ?? "? ℃"
+    cell.temperaatureLabel.text = (city.temperature != nil) ? "\(city.temperature!) ℃" : "? ℃"
     cell.weatherImage.image = city.weatherImage ?? UIImage(named: "dunno")
     cell.layer.cornerRadius = cellCornerRaadius
     
@@ -93,7 +93,7 @@ extension HomeCollectionViewController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    homeModel.cityToChekout = homeModel.savedCities[indexPath.row]
+    model.cityToChekout = model.savedCities[indexPath.row]
     performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
     collectionView.deselectItem(at: indexPath, animated: true)
   }
@@ -125,13 +125,13 @@ extension HomeCollectionViewController: CLLocationManagerDelegate {
       let lng = location.coordinate.longitude
       
       //print("long:" + String(longtitude) + ", lat: " + String(latitude))
-      self.homeModel.cityWith(latitude: lat, longitude: lng) { (city) in
+      self.model.cityWith(latitude: lat, longitude: lng) { (city) in
         self.spinner.stopAnimating()
         if city == nil {
           self.presentAlert()
           return
         } else {
-          self.homeModel.cityToChekout = city!
+          self.model.cityToChekout = city!
           self.performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
         }
       }

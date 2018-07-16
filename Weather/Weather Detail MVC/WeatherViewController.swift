@@ -23,7 +23,7 @@ class WeatherViewController: UIViewController {
   
   var weatherModel = WeatherModel(networkingService: Networking())
   
-  var city: City? {
+  var city: WeatherCity? {
     didSet {
       navigationItem.title = city?.name
     }
@@ -36,19 +36,19 @@ class WeatherViewController: UIViewController {
       
       if responce.error != nil {  print(responce.error!.localizedDescription) }
       
-      self.updateUIfor(day: 0, from: responce.entity)
+      self.updateUIandCityFor(day: 0, from: responce.entity)
     }
   }
 
   
-  func updateUIfor(day: Int, from responce: WeatherResponce?) {
+  func updateUIandCityFor(day: Int, from responce: WeatherResponce?) {
     if let resp = responce {
       let i = resp.timeStamps.count / 5
       
       currentWeatherImage.image = resp.timeStamps[day * i].weatherImage
       city?.weatherImage = resp.timeStamps[0].weatherImage
       currentWeatherTempLabel.text = "\(Int(resp.timeStamps[day * i].temp - 273.15)) ℃"
-      city?.temperature = "\(Int(resp.timeStamps[day * i].temp - 273.15)) ℃"
+      city?.temperature = Int16(resp.timeStamps[day * i].temp - 273.15)
       detailLabels[0].text = "\(resp.timeStamps[day * i].windSpeed)m/s"
       detailLabels[1].text = String(resp.timeStamps[day * i].percipation) + "mm"
       detailLabels[2].text = "\(resp.timeStamps[day * i].humidity)%"

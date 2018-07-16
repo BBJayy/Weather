@@ -7,7 +7,8 @@
 //
 
 import UIKit
-
+import CoreData
+ 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -17,31 +18,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
     UIApplication.shared.statusBarStyle = .lightContent
+    
+    let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    print(urls[urls.count-1] as URL)
     return true
   }
 
-  func applicationWillResignActive(_ application: UIApplication) {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-  }
 
-  func applicationDidEnterBackground(_ application: UIApplication) {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-  }
+  // MARK: - Core Data stack
+  
+  lazy var applicationApplicationSupportDirectory: URL = {
+    // The directory the application uses to store the Core Data store file. This code uses a directory named "com.appcoda.CoreDataDemo" in the application's documents Application Support directory.
+    let urls = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)
+    let url = urls[urls.count - 1].appendingPathComponent("Application Support", isDirectory: true)
+    return url
+  }()
+  
+  lazy var persistentContainer: NSPersistentContainer = {
+    
+    let url = applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite")
 
-  func applicationWillEnterForeground(_ application: UIApplication) {
-    // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-  }
+    if !FileManager.default.fileExists(atPath: url.path) {
+      let sourceSqliteURLs = [Bundle.main.url(forResource: "DataModel", withExtension: "sqlite")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-wal")!, Bundle.main.url(forResource: "DataModel", withExtension: "sqlite-shm")!]
 
-  func applicationDidBecomeActive(_ application: UIApplication) {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-  }
+      let destSqliteURLs = [applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite"), applicationApplicationSupportDirectory.appendingPathComponent("DataModel.sqlite-wal"), applicationApplicationSupportDirectory  .appendingPathComponent("DataModel.sqlite-shm")]
 
-  func applicationWillTerminate(_ application: UIApplication) {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-  }
+      var error:NSError? = nil
+      for index in 0..<sourceSqliteURLs.count {
+        try! FileManager.default.copyItem(at: sourceSqliteURLs[index], to: destSqliteURLs[index])
+      }
 
-
+    }
+    
+    let container = NSPersistentContainer(name: "DataModel")
+    container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+      if let error = error as NSError? {
+        
+        fatalError("Unresolved error \(error), \(error.userInfo)")
+      }
+    })
+    return container
+  }()
+  
 }
 

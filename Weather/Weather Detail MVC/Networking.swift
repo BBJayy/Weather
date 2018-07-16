@@ -11,6 +11,8 @@ import Foundation
 
 class Networking: NetworkingService {
   
+  var urlSession = URLSession(configuration: URLSessionConfiguration.default)
+  
   func getRequest(_ url: URL, parameters: [String : String], responce: @escaping (Data?, Error?) -> ()) {
     let urlComp = NSURLComponents(url: url, resolvingAgainstBaseURL: true)!
     
@@ -29,10 +31,7 @@ class Networking: NetworkingService {
     var urlRequest = URLRequest(url: urlComp.url!)
     urlRequest.httpMethod = "GET"
     
-    let config = URLSessionConfiguration.default
-    let session = URLSession(configuration: config)
-    
-    let task = session.dataTask(with: urlRequest) { (data, response, error) in
+    let task = urlSession.dataTask(with: urlRequest) { (data, response, error) in
       responce(data, error)
     }
     task.resume()

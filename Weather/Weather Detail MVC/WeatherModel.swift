@@ -19,9 +19,13 @@ class WeatherModel {
   var APP_ID = "4241061e2732492036c32da93c869d53"
   var fiveDayForecastURL = URL(string: "http://api.openweathermap.org/data/2.5/forecast")!
   
-  func get5DayWeatherForecast(city: City, responce: @escaping (Responce<WeatherResponce>) -> () ) {
-    
-    let params = ["lat" : String(city.lat), "lon" : String(city.lng), "appid" : APP_ID]
+  func get5DayWeatherForecast(city: WeatherCity, responce: @escaping (Responce<WeatherResponce>) -> () ) {
+    let params: [String: String]
+    if let id = city.id {
+      params = ["id" : String(id), "appid" : APP_ID]
+    } else {
+      params = ["lat" : String(city.lat), "lon" : String(city.lng), "appid" : APP_ID]
+    }
     weatherNetworking?.getRequest(fiveDayForecastURL, parameters: params) { [weak self] (data, error) in
       
       defer {
