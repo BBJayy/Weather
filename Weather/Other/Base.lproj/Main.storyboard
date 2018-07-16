@@ -113,7 +113,7 @@
             </objects>
             <point key="canvasLocation" x="826.39999999999998" y="121.88905547226388"/>
         </scene>
-        <!--Select City-->
+        <!--Loading-->
         <scene sceneID="hYx-bZ-XaE">
             <objects>
                 <tableViewController id="y0T-cf-p0D" customClass="CityChooserTableViewController" customModule="Weather" customModuleProvider="target" sceneMemberID="viewController">
@@ -170,7 +170,7 @@
                             <outlet property="delegate" destination="y0T-cf-p0D" id="IKG-9I-AsG"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Select City" id="Xnd-v2-5Nz">
+                    <navigationItem key="navigationItem" title="Loading" id="Xnd-v2-5Nz">
                         <barButtonItem key="backBarButtonItem" title=" " id="3xT-NA-jkm"/>
                     </navigationItem>
                 </tableViewController>

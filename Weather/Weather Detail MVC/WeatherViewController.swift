@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import os.log
 
 class WeatherViewController: UIViewController {
   @IBOutlet weak var navBar: UINavigationBar? {

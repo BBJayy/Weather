@@ -63,6 +63,7 @@ class HomeCollectionViewController: UICollectionViewController {
     if segue.identifier == toWeatherSegueIdentifier {
       guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
       destination.city = model.cityToChekout
+      
     }
   }
   

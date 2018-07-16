@@ -31,21 +31,30 @@ class CityChooserTableViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     //model.setupDB()
-    model.loadCitiesFromDB()
-    
-    //model.loadCitiesFromDB(containing: "europe")
-    
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    tableView.isScrollEnabled = false
+    DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+      self?.model.loadCitiesFromDB()
+      self?.navigationItem.title = "Choose city"
+      self?.tableView.reloadData()
+      self?.tableView.isScrollEnabled = true
+    }
+
   }
 
   // MARK: - Table view data source
   
   override func numberOfSections(in tableView: UITableView) -> Int {
+    if model.countries.isEmpty { return 0 }
     return model.cities == nil ? model.countries.count : 1
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    if model.countries.isEmpty { return 0 }
     return model.numberOfRows(in: section)
     
   }
@@ -101,8 +110,9 @@ extension CityChooserTableViewController: UISearchBarDelegate {
     if searchBar.text?.count == 0 {
       model.loadCitiesFromDB()
       
-      DispatchQueue.main.async {
+      DispatchQueue.main.async { [weak self] in
         searchBar.resignFirstResponder()
+        self?.tableView.reloadData()
       }
       
     }
