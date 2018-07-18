@@ -19,12 +19,18 @@ class HomeCollectionViewController: UICollectionViewController {
   
   private var model = HomeModel()
   
-  
   let locationManager = CLLocationManager()
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if let selectedRow = collectionView?.indexPathsForSelectedItems?.first {
+      collectionView?.reloadItems(at: [selectedRow])
+      collectionView?.deselectItem(at: selectedRow, animated: false)
+    }
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    
     setupLocationManager()
     
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
@@ -43,15 +49,6 @@ class HomeCollectionViewController: UICollectionViewController {
     collectionView?.reloadData()
   }
   
-  @IBAction func saveToHomeVC(segue: UIStoryboardSegue) {
-    let weatherVC = segue.source as! WeatherViewController
-    let updatedCity = weatherVC.city!
-    let i = model.savedCities.index { $0.name == updatedCity.name }
-    if i != nil {
-      model.savedCities[i!] = updatedCity
-      collectionView?.reloadData()
-    }
-  }
   
   @IBAction func myLocationButtonClicked(_ sender: Any) {
     locationManager.startUpdatingLocation()
@@ -96,7 +93,6 @@ extension HomeCollectionViewController {
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     model.cityToChekout = model.savedCities[indexPath.row]
     performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
-    collectionView.deselectItem(at: indexPath, animated: true)
   }
 }
 

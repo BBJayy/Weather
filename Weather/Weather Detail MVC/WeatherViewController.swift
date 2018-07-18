@@ -8,10 +8,7 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
-  @IBOutlet weak var navBar: UINavigationBar? {
-    didSet { navBar?.topItem?.title = city?.name }
-  }
+class WeatherViewController: VCLLoggingViewController {
   @IBOutlet weak var currentWeatherImage: UIImageView!
   @IBOutlet weak var currentWeatherTempLabel: UILabel!
   @IBOutlet var detailImages: [UIImageView]!
@@ -35,12 +32,7 @@ class WeatherViewController: UIViewController {
       navigationItem.title = city?.name
     }
   }
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    
-  }
-  
+
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     model.get5DayWeatherForecast(city: city!) { (responce: Responce<WeatherResponce>) in

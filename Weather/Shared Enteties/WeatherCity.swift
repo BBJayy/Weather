@@ -8,12 +8,18 @@
 
 import UIKit.UIImage
 
-struct WeatherCity {
+class WeatherCity {
   let name: String
-  let id: Int32?
   let lat: Double
   let lng: Double
   var weatherImage: UIImage?
   var temperature: Int16?
   
+  init(name: String, lat: Double, lng: Double, weatherImage: UIImage?, temperature: Int16?) {
+    self.name = name
+    self.lat = lat
+    self.lng = lng
+    self.weatherImage = weatherImage
+    self.temperature = temperature
+  }
 }

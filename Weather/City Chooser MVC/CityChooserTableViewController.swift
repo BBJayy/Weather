@@ -28,7 +28,6 @@ class CityChooserTableViewController: UITableViewController {
   
   var selectedCellIndexPath: IndexPath?
   
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     //model.setupDB()
@@ -36,27 +35,28 @@ class CityChooserTableViewController: UITableViewController {
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    tableView.isScrollEnabled = false
-    DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-      self?.model.loadCitiesFromDB()
-      DispatchQueue.main.async {
-        self?.navigationItem.title = "Choose city"
-        self?.tableView.reloadData()
-        self?.tableView.isScrollEnabled = true
+    if model.countries == nil {
+      tableView.isScrollEnabled = false
+      DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+        self?.model.loadCitiesFromDB()
+        DispatchQueue.main.async {
+          self?.navigationItem.title = "Choose city"
+          self?.tableView.reloadData()
+          self?.tableView.isScrollEnabled = true
+        }
       }
     }
-
   }
 
   // MARK: - Table view data source
   
   override func numberOfSections(in tableView: UITableView) -> Int {
-    if model.countries.isEmpty { return 0 }
-    return model.cities == nil ? model.countries.count : 1
+    if model.countries == nil { return 0 }
+    return model.cities == nil ? model.countries!.count : 1
   }
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if model.countries.isEmpty { return 0 }
+    if model.countries == nil { return 0 }
     return model.numberOfRows(in: section)
     
   }
@@ -84,7 +84,7 @@ class CityChooserTableViewController: UITableViewController {
       guard let weatherVC = segue.destination as? WeatherViewController else { fatalError("can't cast weatherVC") }
       
       let city = model.city(at: selectedCellIndexPath!)
-      weatherVC.city = WeatherCity(name: city.name!, id: city.id, lat: city.lat, lng: city.lng, weatherImage: nil, temperature: nil)
+      weatherVC.city = WeatherCity(name: city.name!, lat: city.lat, lng: city.lng, weatherImage: nil, temperature: nil)
     }
     
   }

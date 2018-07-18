@@ -13,27 +13,11 @@ class CityChooserModel {
   
   typealias JSONDictionary = [String: Any]
 
-  var countries = [Country]()
+  var countries: [Country]?
   var cities: [City]?
   
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
   
-//  func setupModel(with cities: [City], areCityesSortedByCountryInitials sorted: Bool) {
-//    countries.removeAll()
-//    sortedCountryInitials.removeAll()
-//    for city in cities {
-//      let countryInitial = city.country
-//      if countries[countryInitial] != nil {
-//        countries[countryInitial]!.append(city)
-//      } else {
-//        sortedCountryInitials.append(countryInitial)
-//        countries[countryInitial] = [city]
-//      }
-//    }
-//    if !sorted {
-//      sortedCountryInitials.sort()
-//    }
-//  }
   
   func setupDB() {
     let filepath = Bundle.main.url(forResource: "city.list", withExtension: "json")
@@ -53,25 +37,20 @@ class CityChooserModel {
     for city in response! {
       let cityDictionary = city as! [String: Any]
       let cityName = cityDictionary["name"] as! String
-      let idNSNumber = cityDictionary["id"] as! NSNumber
-      let id = idNSNumber.int32Value
       let countryInit = cityDictionary["country"] as! String
       let lat = (cityDictionary["coord"] as! [String: Any])["lat"] as! Double
       let lng = (cityDictionary["coord"] as! [String: Any])["lon"] as! Double
       
       let city = City(context: context)
-      city.id = id
       city.name = cityName
       city.lat = lat
       city.lng = lng
       
       
       if let i = countries.index(where: { $0.initials == countryInit }) {
-        city.country = countries[i]
         countries[i].addToCities(city)
       } else {
         let country = Country(context: context)
-        city.country = country
         country.cities = NSOrderedSet(object: city)
         country.initials = countryInit
         countries.append(country)
@@ -92,8 +71,8 @@ class CityChooserModel {
   }
 
   func country(at index: Int) -> Country {
-    let sectionIndex = countries.index(countries.startIndex, offsetBy: index)
-    return countries[sectionIndex]
+    let sectionIndex = countries!.index(countries!.startIndex, offsetBy: index)
+    return countries![sectionIndex]
   }
   
   func numberOfRows(in section: Int) -> Int {
@@ -102,8 +81,8 @@ class CityChooserModel {
   
   func city(at indexPath: IndexPath) -> City {
     if cities == nil {
-      let sectionIndex = countries.index(countries.startIndex, offsetBy: indexPath.section)
-      return countries[sectionIndex].cities![indexPath.row] as! City
+      let sectionIndex = countries!.index(countries!.startIndex, offsetBy: indexPath.section)
+      return countries![sectionIndex].cities![indexPath.row] as! City
     } else {
       return cities![indexPath.row]
     }
@@ -115,7 +94,6 @@ class CityChooserModel {
       let request: NSFetchRequest<Country> = Country.fetchRequest()
       request.sortDescriptors = [NSSortDescriptor(key: "initials", ascending: true)]
       cities = nil
-      countries.reserveCapacity(247)
       do {
         countries = try context.fetch(request)
       } catch {

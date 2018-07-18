@@ -106,7 +106,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="spinner" destination="mDs-cO-aRK" id="3Tb-vl-MDJ"/>
-                        <segue destination="MK4-PH-JgL" kind="showDetail" identifier="checkoutCityWeather" id="7c9-Eq-QiI"/>
+                        <segue destination="MK4-PH-JgL" kind="show" identifier="checkoutCityWeather" id="7c9-Eq-QiI"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="isB-kd-O1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -171,7 +171,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Loading" id="Xnd-v2-5Nz">
-                        <barButtonItem key="backBarButtonItem" title=" " id="3xT-NA-jkm"/>
+                        <barButtonItem key="backBarButtonItem" id="3xT-NA-jkm"/>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o0O-py-ZJp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -199,9 +199,6 @@
                                     <navigationItem title="Some City" id="NFh-gE-4fA">
                                         <barButtonItem key="leftBarButtonItem" systemItem="save" id="orS-MI-cWM">
                                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <connections>
-                                                <segue destination="AAL-w1-9Ur" kind="unwind" unwindAction="saveToHomeVCWithSegue:" id="K6F-F5-ued"/>
-                                            </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="nXd-7q-ltf">
                                             <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -595,7 +592,6 @@
                     <connections>
                         <outlet property="currentWeatherImage" destination="JiO-OD-w5N" id="sAK-PQ-HPd"/>
                         <outlet property="currentWeatherTempLabel" destination="rUM-tG-IBt" id="p6C-Pq-TuF"/>
-                        <outlet property="navBar" destination="Y59-Se-UIj" id="onH-rU-M6v"/>
                         <outletCollection property="detailImages" destination="tAb-Oi-unv" collectionClass="NSMutableArray" id="FvV-Fc-Zyh"/>
                         <outletCollection property="detailImages" destination="zGK-3z-ZfT" collectionClass="NSMutableArray" id="EDb-06-eUK"/>
                         <outletCollection property="detailImages" destination="g3t-Zw-WHC" collectionClass="NSMutableArray" id="SfV-rM-CCE"/>
@@ -665,6 +661,6 @@
         <image name="wind" width="76" height="65"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="59o-Sf-IIg"/>
+        <segue reference="7c9-Eq-QiI"/>
     </inferredMetricsTieBreakers>
 </document>

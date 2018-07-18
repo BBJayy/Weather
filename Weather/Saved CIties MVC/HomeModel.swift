@@ -44,7 +44,7 @@ class HomeModel {
        let lngs = defaults.array(forKey: DefaultsKeys.lngs.rawValue) {
       savedCities.reserveCapacity(names.count)
       for i in 0..<names.count {
-        let city = WeatherCity(name: names[i] as! String, id: nil, lat: lats[i] as! Double, lng: lngs[i] as! Double, weatherImage: nil, temperature: nil)
+        let city = WeatherCity(name: names[i] as! String, lat: lats[i] as! Double, lng: lngs[i] as! Double, weatherImage: nil, temperature: nil)
         savedCities.append(city)
       }
     }
@@ -68,7 +68,7 @@ class HomeModel {
             let cityName = placeMark.subAdministrativeArea
         else { city = nil; return }
       
-      city = WeatherCity(name: cityName, id: nil, lat: Double(latitude), lng: Double(longitude), weatherImage: nil, temperature: nil)
+      city = WeatherCity(name: cityName, lat: Double(latitude), lng: Double(longitude), weatherImage: nil, temperature: nil)
       
     })
     
