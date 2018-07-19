@@ -6,70 +6,28 @@
 //  Copyright © 2018 Рома Сорока. All rights reserved.
 //
 
-import UIKit.UIApplication
-import CoreData
+import Foundation
+
+
+@objc protocol CitiesDB {
+  @objc optional func setupDB()
+  func loadAllCities(callback: @escaping ([Country]?, Error?) -> ())
+  func loadCitiesContainign(word: String, callback: @escaping ([City]?, Error?) -> () )
+
+}
 
 class CityChooserModel {
-  
-  typealias JSONDictionary = [String: Any]
 
   var countries: [Country]?
   var cities: [City]?
   
-  let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+  private let database: CitiesDB
   
+  init(DB: CitiesDB) {
+    self.database = DB
+  }
   
-  func setupDB() {
-    let filepath = Bundle.main.url(forResource: "city.list", withExtension: "json")
-    let data = try? Data(contentsOf: filepath!)
-    
-    var response: [Any]?
-    var errorMessage = ""
-    do {
-      response = try JSONSerialization.jsonObject(with: data!, options: []) as? [Any]
-    } catch let parseError as NSError {
-      errorMessage += "JSONSerialization error: \(parseError.localizedDescription)\n"
-      return
-    }
-    
-    var countries = [Country]()
-    
-    for city in response! {
-      let cityDictionary = city as! [String: Any]
-      let cityName = cityDictionary["name"] as! String
-      let countryInit = cityDictionary["country"] as! String
-      let lat = (cityDictionary["coord"] as! [String: Any])["lat"] as! Double
-      let lng = (cityDictionary["coord"] as! [String: Any])["lon"] as! Double
-      
-      let city = City(context: context)
-      city.name = cityName
-      city.lat = lat
-      city.lng = lng
-      
-      
-      if let i = countries.index(where: { $0.initials == countryInit }) {
-        countries[i].addToCities(city)
-      } else {
-        let country = Country(context: context)
-        country.cities = NSOrderedSet(object: city)
-        country.initials = countryInit
-        countries.append(country)
-      }
-    
-    }
-    
-    saveContext()
-    
-  }
- 
-  func saveContext() {
-    do {
-      try context.save()
-    } catch {
-      fatalError(error.localizedDescription)
-    }
-  }
-
+  //MARK: TableView funcs
   func country(at index: Int) -> Country {
     let sectionIndex = countries!.index(countries!.startIndex, offsetBy: index)
     return countries![sectionIndex]
@@ -88,32 +46,31 @@ class CityChooserModel {
     }
   }
   
-  func loadCitiesFromDB(containing: String? = nil) {
-    
-    if containing == nil {
-      let request: NSFetchRequest<Country> = Country.fetchRequest()
-      request.sortDescriptors = [NSSortDescriptor(key: "initials", ascending: true)]
-      cities = nil
-      do {
-        countries = try context.fetch(request)
-      } catch {
-        print("Error fetching data \(error)")
+  
+  //MARK: Database connection
+  
+  func loadCitiesFromDB(containing: String? = nil, callback: @escaping (Response<Int>) -> () ) {
+    if let wordPart = containing {
+      database.loadCitiesContainign(word: wordPart) { (cities, error) in
+        guard error == nil else {
+          callback(Response<Int>.error(error!))
+          return
+        }
+        self.cities = cities
+        callback(Response<Int>.success(cities!.count))
       }
     } else {
-      let request: NSFetchRequest<City> = City.fetchRequest()
-      
-      if let wordPart = containing {
-        request.predicate = NSPredicate(format: "name CONTAINS[cd] %@", wordPart)
-      }
-      
-      request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-      
-      do {
-        cities = try context.fetch(request)
-      } catch {
-        print("Error fetching search resuly \(error)")
+      database.loadAllCities { (countries, error) in
+        guard error == nil else {
+          callback(Response<Int>.error(error!))
+          return
+        }
+        self.countries = countries!
+        self.cities = nil
+        callback(Response<Int>.success(countries!.count))
       }
     }
+    
     
     
     

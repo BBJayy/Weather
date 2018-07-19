@@ -24,7 +24,7 @@ struct WeatherResponce: Decodable {
       case 0...300, 772...799, 900...902, 905...1000 :
         return UIImage(named: "stormCloud")!
         
-      case 301...500, 501...600 :
+      case 301...600 :
         return UIImage(named: "rainyCloud")!
         
       case 701...771 :

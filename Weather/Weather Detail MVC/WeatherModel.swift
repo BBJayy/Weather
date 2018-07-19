@@ -8,40 +8,43 @@
 
 import Foundation
 
-protocol NetworkingService {
-  func getRequest(_ url: URL, parameters: [String: String], responce: @escaping (Data?, Error?) -> ())
+protocol WeatherNetworkingService {
+  func get5DayWeather(lat: Double, lng: Double, responce: @escaping (Data?, Error?) -> ())
 }
 
 class WeatherModel {
   var weatherResponce: WeatherResponce?
   
-  private var weatherNetworking: NetworkingService?
-  private var APP_ID = "4241061e2732492036c32da93c869d53"
-  private var fiveDayForecastURL = URL(string: "http://api.openweathermap.org/data/2.5/forecast")!
+  private var weatherNetworking: WeatherNetworkingService?
   
-  func get5DayWeatherForecast(city: WeatherCity, responce: @escaping (Responce<WeatherResponce>) -> () ) {
-    let params = ["lat" : String(city.lat), "lon" : String(city.lng), "appid" : APP_ID]
-    weatherNetworking?.getRequest(fiveDayForecastURL, parameters: params) { [weak self] (data, error) in
-      
+  private var decoder = JSONDecoder() {
+    didSet {
+      decoder.dateDecodingStrategy = .secondsSince1970
+    }
+  }
+
+  
+  func get5DayWeatherForecast(city: WeatherCity, responce: @escaping (Response<WeatherResponce>) -> () ) {
+    weatherNetworking?.get5DayWeather(lat: city.lat, lng: city.lng) { [weak self] (data, error) in
+      var resp: Response<WeatherResponce>
+
       defer {
         DispatchQueue.main.async {
-          responce(Responce<WeatherResponce>(self?.weatherResponce, error))
+          responce(resp)
         }
       }
       
-      
       if error == nil {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        self?.weatherResponce = try! decoder.decode(WeatherResponce.self, from: data!)
+        self?.weatherResponce = try! self!.decoder.decode(WeatherResponce.self, from: data!)
+        resp = Response.success(self!.weatherResponce!)
       } else {
-        self?.weatherResponce = nil
+        resp = Response.error(error!)
       }
       
     }
   }
   
-  init(networkingService: NetworkingService) {
+  init(networkingService: WeatherNetworkingService) {
     weatherNetworking = networkingService
   }
 }

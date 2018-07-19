@@ -24,7 +24,7 @@ private let reuseIdentifier = "CityCell"
 
 class CityChooserTableViewController: UITableViewController {
   
-  private var model = CityChooserModel()
+  private var model = CityChooserModel(DB: CoreDB())
   
   var selectedCellIndexPath: IndexPath?
   
@@ -38,15 +38,24 @@ class CityChooserTableViewController: UITableViewController {
     if model.countries == nil {
       tableView.isScrollEnabled = false
       DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-        self?.model.loadCitiesFromDB()
-        DispatchQueue.main.async {
-          self?.navigationItem.title = "Choose city"
-          self?.tableView.reloadData()
-          self?.tableView.isScrollEnabled = true
+        self?.model.loadCitiesFromDB { resp in
+          DispatchQueue.main.async {
+            switch resp {
+            case .success:
+                self?.navigationItem.title = "Choose city"
+                self?.tableView.reloadData()
+            case .error(let error):
+                print(error)
+                self?.navigationItem.title = "Error occured"
+            }
+            self?.tableView.isScrollEnabled = true
+          }
+          
         }
       }
     }
   }
+  
 
   // MARK: - Table view data source
   
@@ -79,6 +88,8 @@ class CityChooserTableViewController: UITableViewController {
     return indexPath
   }
   
+  
+  //MARK: Navigation
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == toWeatherCVIndentifier {
       guard let weatherVC = segue.destination as? WeatherViewController else { fatalError("can't cast weatherVC") }
@@ -89,34 +100,28 @@ class CityChooserTableViewController: UITableViewController {
     
   }
   
-  //MARK: sectionIndexTitles
-  //  override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-  //    return sortedCountryInitials
-  //  }
-  
 }
 
 extension CityChooserTableViewController: UISearchBarDelegate {
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    
-    model.loadCitiesFromDB(containing: searchBar.text!)
-    
-    DispatchQueue.main.async {
-      searchBar.resignFirstResponder()
-      self.tableView.reloadData()
+      model.loadCitiesFromDB(containing: searchBar.text!) { _ in
+      DispatchQueue.main.async {
+        searchBar.resignFirstResponder()
+        self.tableView.reloadData()
+      }
     }
   }
 
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
     if searchBar.text?.count == 0 {
-      model.loadCitiesFromDB()
-      
-      DispatchQueue.main.async { [weak self] in
-        searchBar.resignFirstResponder()
-        self?.tableView.reloadData()
+      model.loadCitiesFromDB { _ in
+        DispatchQueue.main.async { [weak self] in
+          searchBar.resignFirstResponder()
+          self?.tableView.reloadData()
+        }
+        
       }
-      
     }
   }
   

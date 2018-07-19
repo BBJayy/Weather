@@ -17,7 +17,7 @@ private let toAddVCSegueIdentifier = "addNewCity"
 class HomeCollectionViewController: UICollectionViewController {
   @IBOutlet weak var spinner: UIActivityIndicatorView!
   
-  private var model = HomeModel()
+  private var model = HomeModel(storage: UserDefaultsManager())
   
   let locationManager = CLLocationManager()
 
@@ -60,7 +60,7 @@ class HomeCollectionViewController: UICollectionViewController {
     if segue.identifier == toWeatherSegueIdentifier {
       guard let destination = segue.destination as? WeatherViewController else { fatalError("can't cast to WeatherViewController") }
       destination.city = model.cityToChekout
-      
+      destination.plussSignAvailable = false
     }
   }
   
@@ -92,7 +92,7 @@ extension HomeCollectionViewController {
   
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     model.cityToChekout = model.savedCities[indexPath.row]
-    performSegue(withIdentifier: toWeatherSegueIdentifier, sender: nil)
+    performSegue(withIdentifier: toWeatherSegueIdentifier, sender: CollectionViewCell.self)
   }
 }
 
@@ -109,7 +109,7 @@ extension HomeCollectionViewController: CLLocationManagerDelegate {
   private func presentAlert() {
     let aller = UIAlertController(title: "Error", message: "Check your internet connection", preferredStyle: .alert)
     present(aller, animated: true, completion: nil)
-    Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { _ in
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
       self.dismiss(animated: true, completion: nil)
     }
   }
@@ -121,6 +121,7 @@ extension HomeCollectionViewController: CLLocationManagerDelegate {
       let lat = location.coordinate.latitude
       let lng = location.coordinate.longitude
       
+      model.set(mapper: LocationManager("eng"))
       //print("long:" + String(longtitude) + ", lat: " + String(latitude))
       self.model.cityWith(latitude: lat, longitude: lng) { (city) in
         self.spinner.stopAnimating()

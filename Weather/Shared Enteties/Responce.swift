@@ -8,13 +8,7 @@
 
 import Foundation
 
-struct Responce<Entity: Decodable> {
-  let entity: Entity?
-  let error: Error?
-  
-  init(_ entity: Entity?, _ error: Error?) {
-    self.entity = entity
-    self.error = error
-  }
+enum Response<Entity: Decodable> {
+  case success(Entity)
+  case error(Error)
 }
-
