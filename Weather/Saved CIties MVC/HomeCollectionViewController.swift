@@ -16,8 +16,21 @@ private let toAddVCSegueIdentifier = "addNewCity"
 
 class HomeCollectionViewController: UICollectionViewController {
   @IBOutlet weak var spinner: UIActivityIndicatorView!
+  private lazy var refresher: UIRefreshControl! = {
+    let refr = UIRefreshControl()
+    refr.addTarget(self, action: #selector(refresh(_:)), for: UIControlEvents.valueChanged)
+    refr.tintColor = .white
+    return refr
+  }()
   
-  private var model = HomeModel(storage: UserDefaultsManager())
+  @objc func refresh(_ refresher: UIRefreshControl?) {
+    model.fetchCitiesWeather {
+      self.collectionView!.reloadData()
+      self.refresher.endRefreshing()
+    }
+  }
+  
+  private var model = HomeModel(storage: UserDefaultsManager(), networking: OpenWeatherNetworking())
   
   let locationManager = CLLocationManager()
 
@@ -32,6 +45,14 @@ class HomeCollectionViewController: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setupLocationManager()
+    
+    if #available(iOS 10.0, *) {
+      collectionView?.refreshControl = refresher
+    } else {
+      collectionView?.addSubview(refresher)
+    }
+    
+    refresh(nil)
     
     flowLayout?.itemSize = UICollectionViewFlowLayoutAutomaticSize
     flowLayout?.estimatedItemSize = CGSize(width: 100, height: 120)

@@ -24,7 +24,6 @@
 		84A21D9320E1A9E90090E159 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84A21D8920E1A9E90090E159 /* LaunchScreen.storyboard */; };
 		84A21D9420E1A9E90090E159 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84A21D8B20E1A9E90090E159 /* Main.storyboard */; };
 		84A21D9520E1A9E90090E159 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A21D8D20E1A9E90090E159 /* AppDelegate.swift */; };
-		84A21D9620E1A9E90090E159 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84A21D8E20E1A9E90090E159 /* Info.plist */; };
 		84A21D9B20E1BA7C0090E159 /* CityChooserTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A21D9A20E1BA7C0090E159 /* CityChooserTableViewController.swift */; };
 		84A21D9D20E1BCEC0090E159 /* WeatherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A21D9C20E1BCEC0090E159 /* WeatherViewController.swift */; };
 		84A21D9F20E1C1980090E159 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84A21D9E20E1C1980090E159 /* Assets.xcassets */; };
@@ -75,8 +74,6 @@
 			children = (
 				84A21D9C20E1BCEC0090E159 /* WeatherViewController.swift */,
 				84882A5C20EA8BAD0054D67F /* WeatherModel.swift */,
-				84882A5E20EA92780054D67F /* OpenWeatherNetworking.swift */,
-				84A21DAE20E276ED0090E159 /* WeatherResponce.swift */,
 			);
 			path = "Weather Detail MVC";
 			sourceTree = "<group>";
@@ -136,6 +133,8 @@
 		84A21D8720E1A9E90090E159 /* Shared Enteties */ = {
 			isa = PBXGroup;
 			children = (
+				84A21DAE20E276ED0090E159 /* WeatherResponce.swift */,
+				84882A5E20EA92780054D67F /* OpenWeatherNetworking.swift */,
 				84882A6020F20F860054D67F /* Responce.swift */,
 				84E271E320F7DBAB00A44015 /* DataModel.xcdatamodeld */,
 				8409FD2920FE269700A350BB /* DataModel.sqlite */,
@@ -230,7 +229,6 @@
 			files = (
 				8409FD2E20FE269700A350BB /* DataModel.sqlite-wal in Resources */,
 				8409FD2D20FE269700A350BB /* DataModel.sqlite-shm in Resources */,
-				84A21D9620E1A9E90090E159 /* Info.plist in Resources */,
 				8409FD2C20FE269700A350BB /* DataModel.sqlite in Resources */,
 				84A21D9420E1A9E90090E159 /* Main.storyboard in Resources */,
 				84A21D9F20E1C1980090E159 /* Assets.xcassets in Resources */,

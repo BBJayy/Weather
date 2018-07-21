@@ -8,14 +8,14 @@
 
 import Foundation
 
-protocol WeatherNetworkingService {
+protocol WeatherForecastService {
   func get5DayWeather(lat: Double, lng: Double, responce: @escaping (Data?, Error?) -> ())
 }
 
 class WeatherModel {
   var weatherResponce: WeatherResponce?
   
-  private var weatherNetworking: WeatherNetworkingService?
+  private var weatherNetworking: WeatherForecastService?
   
   private var decoder = JSONDecoder() {
     didSet {
@@ -44,7 +44,7 @@ class WeatherModel {
     }
   }
   
-  init(networkingService: WeatherNetworkingService) {
+  init(networkingService: WeatherForecastService) {
     weatherNetworking = networkingService
   }
 }

@@ -13,7 +13,7 @@ struct WeatherResponce: Decodable {
   struct Weather: Decodable {
     
     private var imageID: Int
-    let temp: Float
+    let temp: Double
     let humidity: Int
     let windSpeed: Float
     var percipation: Float
@@ -58,7 +58,7 @@ extension WeatherResponce {
 
 extension WeatherResponce.Weather {
   private struct Main: Decodable {
-    let temp: Float
+    let temp: Double
     let humidity: Int
   }
   

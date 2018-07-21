@@ -13,10 +13,20 @@ protocol WeatherCityStorage {
   func fetchCities() -> [WeatherCity]
 }
 
+protocol CurrentWeatherSevice {
+  func getWeather(lat: Double, lng: Double, complition: @escaping (Data?, Error?) -> () )
+}
+
 class HomeModel {
   
   private let localStorage: WeatherCityStorage
   private var mapper: Mapper?
+  private var weatherDataSource: CurrentWeatherSevice?
+  private let weatherDecoder = { () -> JSONDecoder in
+    let dec = JSONDecoder()
+    dec.dateDecodingStrategy = .secondsSince1970
+    return dec
+  }()
   
   var cityToChekout: WeatherCity?
   
@@ -28,13 +38,42 @@ class HomeModel {
     }
   }
   
-  init(storage: WeatherCityStorage) {
+  init(storage: WeatherCityStorage, networking: CurrentWeatherSevice) {
     self.localStorage = storage
+    self.weatherDataSource = networking
     savedCities = localStorage.fetchCities()
-    
   }
   
 
+}
+
+//MARK: Weather Networking
+
+extension HomeModel {
+  func fetchCitiesWeather(complition: @escaping () -> ()) {
+    DispatchQueue.global(qos: .userInteractive).async {
+      let dg = DispatchGroup()
+      for city in self.savedCities {
+        dg.enter()
+        DispatchQueue.global(qos: .userInteractive).async {
+          self.weatherDataSource?.getWeather(lat: city.lat, lng: city.lng) { [unowned self] (data, error) in
+            guard error == nil else {
+              print("Error getting weather for city \(city.name): \(error!)")
+              return
+            }
+            
+            let weather = try! self.weatherDecoder.decode(WeatherResponce.Weather.self, from: data!)
+            
+            city.temperature = Int16(weather.temp - 273.15)
+            city.weatherImage = weather.weatherImage
+            dg.leave()
+          }
+        }
+      }
+      dg.notify(queue: DispatchQueue.main, execute: complition)
+    }
+    
+  }
 }
 
 //MARK: Location
