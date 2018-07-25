@@ -8,11 +8,12 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
+class WeatherViewController: UIViewController, UIScrollViewDelegate {
   @IBOutlet weak var currentWeatherImage: UIImageView!
   @IBOutlet weak var currentWeatherTempLabel: UILabel!
   @IBOutlet var detailImages: [UIImageView]!
   @IBOutlet var detailLabels: [UILabel]!
+  @IBOutlet weak var scrollView: UIScrollView!
   @IBOutlet var futureViews: [UIView]! {
     didSet {
       for view in futureViews {
@@ -24,6 +25,12 @@ class WeatherViewController: UIViewController {
   @IBOutlet var futureWeatherImages: [UIImageView]!
   @IBOutlet var futureTempLabels: [UILabel]!
   @IBOutlet var futureDayNames: [UILabel]!
+  private lazy var refresher: UIRefreshControl! = {
+    let refr = UIRefreshControl()
+    refr.addTarget(self, action: #selector(refresh(_:)), for: UIControlEvents.valueChanged)
+    refr.tintColor = .white
+    return refr
+  }()
   
   var model = WeatherModel(networkingService: OpenWeatherNetworking())
   
@@ -36,15 +43,23 @@ class WeatherViewController: UIViewController {
     }
   }
 
+  @objc func refresh(_ refresher: UIRefreshControl) {
+    DispatchQueue.global().async {
+      self.requestWeatherData {
+        refresher.endRefreshing()
+      }
+    }
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    scrollView.refreshControl = refresher
     if !plussSignAvailable {
       navigationItem.rightBarButtonItem = nil
     }
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
+  fileprivate func requestWeatherData(appandingAction: (() -> ())? = nil) {
     model.get5DayWeatherForecast(city: city!) { (responce: Response<WeatherResponce>) in
       switch responce {
       case .success(let weather):
@@ -54,7 +69,14 @@ class WeatherViewController: UIViewController {
         self.currentWeatherTempLabel.text = "Error occured"
         self.detailLabels.forEach { $0.text = "..." }
       }
+      if appandingAction != nil { appandingAction!() }
     }
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    requestWeatherData()
   }
 
   @objc func futureViewTapped(sender: UIGestureRecognizer) {
@@ -78,7 +100,7 @@ class WeatherViewController: UIViewController {
     detailLabels[2].text = "\(responce.timeStamps[day * i].humidity)%"
     
     for i in 0..<5 {
-      futureWeatherImages[i].image = responce.timeStamps[0].weatherImage
+      futureWeatherImages[i].image = responce.timeStamps[i*8].weatherImage
       futureTempLabels[i].text = "\(Int(responce.timeStamps[i*8].temp - 273.15)) ℃"
       
       let date = responce.timeStamps[i*8].date

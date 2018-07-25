@@ -23,9 +23,9 @@ class UserDefaultsManager: WeatherCityStorage {
   private var lats = [Double]()
   
   func fetchCities() -> [WeatherCity] {
-    names = defaults.array(forKey: DefaultsKeys.names.rawValue) as! [String]
-    lats = defaults.array(forKey: DefaultsKeys.lats.rawValue) as! [Double]
-    lngs = defaults.array(forKey: DefaultsKeys.lngs.rawValue) as! [Double]
+    names = defaults.array(forKey: DefaultsKeys.names.rawValue) as? [String] ?? []
+    lats = defaults.array(forKey: DefaultsKeys.lats.rawValue) as?  [Double] ?? []
+    lngs = defaults.array(forKey: DefaultsKeys.lngs.rawValue) as? [Double] ?? []
     var cities = [WeatherCity]()
     cities.reserveCapacity(names.count)
     for i in 0..<names.count {
