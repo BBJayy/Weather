@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UserDefaultsManager: WeatherCityStorage {
+class UserDefaultsManager: WeatherCityStorageService {
   enum DefaultsKeys: String {
     case names
     case lats

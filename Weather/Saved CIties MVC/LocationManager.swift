@@ -9,7 +9,7 @@
 import Foundation
 import CoreLocation
 
-class LocationManager: Mapper {
+class LocationManager: MapperService {
   private let geoCoder = CLGeocoder()
   private let languageIdentifyer: String
   

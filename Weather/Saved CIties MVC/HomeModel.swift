@@ -8,7 +8,7 @@
 
 import UIKit.UIImage
 
-protocol WeatherCityStorage {
+protocol WeatherCityStorageService {
   func append(city: WeatherCity)
   func fetchCities() -> [WeatherCity]
 }
@@ -19,8 +19,8 @@ protocol CurrentWeatherSevice {
 
 class HomeModel {
   
-  private let localStorage: WeatherCityStorage
-  private var mapper: Mapper?
+  private let localStorage: WeatherCityStorageService
+  private var mapper: MapperService?
   private var weatherDataSource: CurrentWeatherSevice?
   private let weatherDecoder = { () -> JSONDecoder in
     let dec = JSONDecoder()
@@ -38,7 +38,7 @@ class HomeModel {
     }
   }
   
-  init(storage: WeatherCityStorage, networking: CurrentWeatherSevice) {
+  init(storage: WeatherCityStorageService, networking: CurrentWeatherSevice) {
     self.localStorage = storage
     self.weatherDataSource = networking
     savedCities = localStorage.fetchCities()
@@ -78,12 +78,12 @@ extension HomeModel {
 
 //MARK: Location
 
-protocol Mapper {
+protocol MapperService {
   func getCityName(latitude: Double, longtitude: Double, responce: @escaping (Response<String>) -> ())
 }
 
 extension HomeModel {
-  func set(mapper: Mapper) {
+  func set(mapper: MapperService) {
     self.mapper = mapper
   }
   

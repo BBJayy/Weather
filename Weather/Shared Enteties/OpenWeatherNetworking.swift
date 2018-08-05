@@ -10,7 +10,7 @@ import Foundation
 
 class OpenWeatherNetworking: WeatherForecastService, CurrentWeatherSevice {
 
-  private let urlSession = URLSession(configuration: URLSessionConfiguration.default)
+  private let urlSession = URLSession(configuration: URLSessionConfiguration.ephemeral)
   
   private let APP_ID = "4241061e2732492036c32da93c869d53"
   private let fiveDayForecastURL = URL(string: "http://api.openweathermap.org/data/2.5/forecast")!

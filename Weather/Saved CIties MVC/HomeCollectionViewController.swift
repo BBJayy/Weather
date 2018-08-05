@@ -24,6 +24,7 @@ class HomeCollectionViewController: UICollectionViewController {
   }()
   
   @objc func refresh(_ refresher: UIRefreshControl?) {
+    
     model.fetchCitiesWeather {
       self.collectionView!.reloadData()
       self.refresher.endRefreshing()

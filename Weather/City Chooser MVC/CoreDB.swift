@@ -9,7 +9,7 @@
 import UIKit.UIApplication
 import CoreData
 
-class CoreDB: CitiesDB {
+class CoreDB: CitiesDBService {
   
   let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 

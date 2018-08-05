@@ -89,26 +89,37 @@ class WeatherViewController: UIViewController, UIScrollViewDelegate {
   }
   
   func updateUIandCityFor(day: Int, from responce: WeatherResponce) {
-    let i = responce.timeStamps.count / 5
+    let i = 8 //number of 3 hour intervals in a day
+    currentWeatherImage.image = responce.timeStamps[safe: day * i]?.weatherImage ?? #imageLiteral(resourceName: "dunno")
+    city?.weatherImage = responce.timeStamps[safe: day * i]?.weatherImage
     
-    currentWeatherImage.image = responce.timeStamps[day * i].weatherImage
-    city?.weatherImage = responce.timeStamps[0].weatherImage
-    currentWeatherTempLabel.text = "\(Int(responce.timeStamps[day * i].temp - 273.15)) ℃"
-    city?.temperature = Int16(responce.timeStamps[day * i].temp - 273.15)
-    detailLabels[0].text = "\(responce.timeStamps[day * i].windSpeed)m/s"
-    detailLabels[1].text = String(responce.timeStamps[day * i].percipation) + "mm"
-    detailLabels[2].text = "\(responce.timeStamps[day * i].humidity)%"
+    let temp = responce.timeStamps[safe: day * i]?.temp
+    currentWeatherTempLabel.text = temp != nil ? "\(Int(temp! - 273.15)) ℃" : "?"
+    city?.temperature = temp != nil ? Int16(temp! - 273.15) : nil
+    
+    let windSpeed = responce.timeStamps[safe: day * i]?.windSpeed
+    detailLabels[0].text = windSpeed != nil ? "\(windSpeed!)m/s" : "?"
+    
+    let percipation = responce.timeStamps[safe: day * i]?.percipation
+    detailLabels[1].text = percipation != nil ? "\(percipation!)mm" : "?"
+    
+    let humidity = responce.timeStamps[safe: day * i]?.humidity
+    detailLabels[2].text = humidity != nil ? "\(humidity!)%" : "?"
     
     for i in 0..<5 {
-      futureWeatherImages[i].image = responce.timeStamps[i*8].weatherImage
-      futureTempLabels[i].text = "\(Int(responce.timeStamps[i*8].temp - 273.15)) ℃"
+      futureWeatherImages[i].image = responce.timeStamps[safe: i*8]?.weatherImage ?? #imageLiteral(resourceName: "dunno")
+      let temp = responce.timeStamps[safe: i*8]?.temp
+      futureTempLabels[i].text = temp != nil ? "\(Int(temp! - 273.15)) ℃" : "?"
       
-      let date = responce.timeStamps[i*8].date
-      let format = "EEEE"
-      let dateFormatter = DateFormatter()
-      dateFormatter.dateFormat = format
-      
-      futureDayNames[i].text = dateFormatter.string(from: date)
+      if let date = responce.timeStamps[safe: i*8]?.date {
+        let format = "EEEE"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        let dayName = dateFormatter.string(from: date)
+        futureDayNames[i].text = dayName
+      } else {
+        futureDayNames[i].text = "?"
+      }
     }
 
   }

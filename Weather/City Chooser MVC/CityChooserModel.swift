@@ -9,7 +9,7 @@
 import Foundation
 
 
-@objc protocol CitiesDB {
+@objc protocol CitiesDBService {
   @objc optional func setupDB()
   func loadAllCities(callback: @escaping ([Country]?, Error?) -> ())
   func loadCitiesContainign(word: String, callback: @escaping ([City]?, Error?) -> () )
@@ -21,9 +21,9 @@ class CityChooserModel {
   var countries: [Country]?
   var cities: [City]?
   
-  private let database: CitiesDB
+  private let database: CitiesDBService
   
-  init(DB: CitiesDB) {
+  init(DB: CitiesDBService) {
     self.database = DB
   }
   

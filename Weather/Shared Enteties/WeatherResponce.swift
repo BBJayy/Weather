@@ -99,12 +99,7 @@ extension WeatherResponce.Weather {
     let wind = try conteiner.decode(Wind.self, forKey: .wind)
     windSpeed = wind.speed
     
-    if conteiner.contains(.rain) {
-      let rain = try conteiner.decode(Rain.self, forKey: .rain)
-      percipation = rain.percipation ?? 0.0
-    } else {
-      percipation = 0.0
-    }
+    percipation = try conteiner.decodeIfPresent(Rain.self, forKey: .rain)?.percipation ?? 0.0
     
     date = try conteiner.decode(Date.self, forKey: .date)
   }
