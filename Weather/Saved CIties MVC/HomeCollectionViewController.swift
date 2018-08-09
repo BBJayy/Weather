@@ -31,7 +31,7 @@ class HomeCollectionViewController: UICollectionViewController {
     }
   }
   
-  private var model = HomeModel(storage: UserDefaultsManager(), networking: OpenWeatherNetworking())
+    private var model = HomeModel(storage: UserDefaultsManager(), networking: APIRequestLoader<CurrenWeatherRequest>(apiRequest: CurrenWeatherRequest()))
   
   let locationManager = CLLocationManager()
 

@@ -1,4 +1,4 @@
-//
+  //
 //  WeatherViewController.swift
 //  Weather
 //
@@ -32,7 +32,10 @@ class WeatherViewController: UIViewController, UIScrollViewDelegate {
     return refr
   }()
   
-  var model = WeatherModel(networkingService: OpenWeatherNetworking())
+    let model = WeatherModel(forecastService: APIRequestLoader<FiveDayForecastRequest>(apiRequest:
+            FiveDayForecastRequest()
+        )
+    )
   
   var plussSignAvailable = true
   var showingDay = 0

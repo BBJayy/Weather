@@ -8,6 +8,12 @@
 
 import Foundation
 
+enum RequestError: Error {
+    case invalidCoordinate
+    case invalidURL
+    case unknown
+}
+
 protocol APIRequest {
     associatedtype RequestDataType
     associatedtype ResponseDataType
